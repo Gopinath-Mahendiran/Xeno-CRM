@@ -165,5 +165,7 @@ def health():
 
 
 if __name__ == "__main__":
-    # Run server on port 5001 (port 5000 is used by macOS AirPlay Receiver)
-    app.run(host="0.0.0.0", port=5001)
+    import os
+    port = int(os.environ.get("PORT", 5001))
+    # Run server on port (fallback to 5001 for local dev, 5000 is used by macOS AirPlay)
+    app.run(host="0.0.0.0", port=port)
