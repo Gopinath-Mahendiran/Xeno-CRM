@@ -1,0 +1,28 @@
+# Xeno CRM — Python Dependencies
+# Install: pip install -r requirements.txt
+
+# Django core
+Django>=4.2,<5.0
+djangorestframework>=3.14
+django-cors-headers>=4.3
+whitenoise>=6.6
+
+# Async task queue
+celery>=5.3
+django-celery-results>=2.5
+redis>=5.0
+
+# Environment variables
+python-dotenv>=1.0
+
+# LangChain — Agentic AI layer
+langchain>=0.2.0
+langchain-core>=0.2.0
+langchain-google-genai>=1.0.0
+langchain-community>=0.2.0
+
+# Google Gemini SDK
+google-generativeai>=0.7.0
+
+# HTTP client (channel dispatch)
+requests>=2.31
