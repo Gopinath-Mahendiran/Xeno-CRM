@@ -10,6 +10,30 @@ from django.urls import path, re_path
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render
+
+def spa_fallback(request, *args, **kwargs):
+    template_path = settings.BASE_DIR / "static_frontend" / "index.html"
+    if template_path.exists():
+        return render(request, "index.html")
+    return JsonResponse({
+        "status": "Xeno CRM Backend API is running",
+        "message": "The frontend is hosted separately (e.g. on Vercel). Use the API endpoints at /api/",
+        "admin": "/admin/"
+    })
+
+def favicon_fallback(request):
+    path = settings.BASE_DIR / "static_frontend" / "favicon.svg"
+    if path.exists():
+        return render(request, "favicon.svg", content_type="image/svg+xml")
+    return HttpResponse(status=204)
+
+def icons_fallback(request):
+    path = settings.BASE_DIR / "static_frontend" / "icons.svg"
+    if path.exists():
+        return render(request, "icons.svg", content_type="image/svg+xml")
+    return HttpResponse(status=204)
 
 from crm.views import (
     # Auth
@@ -71,12 +95,12 @@ urlpatterns = [
     path("api/receipts/",               ReceiptAPIView.as_view(),      name="receipts"),
 
     # ── Static/Public Files served from template folder ──────────────
-    path("favicon.svg", TemplateView.as_view(template_name="favicon.svg", content_type="image/svg+xml")),
-    path("icons.svg", TemplateView.as_view(template_name="icons.svg", content_type="image/svg+xml")),
+    path("favicon.svg", favicon_fallback, name="favicon"),
+    path("icons.svg", icons_fallback, name="icons"),
 
     # ── React SPA catch-all ──────────────────────────────────────────
     # All non-API routes serve index.html so React Router can handle them
-    re_path(r"^(?!api/).*$", TemplateView.as_view(template_name="index.html"), name="frontend"),
+    re_path(r"^(?!api/).*$", spa_fallback, name="frontend"),
 ]
 
 # Serve media files in development
